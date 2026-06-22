@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  admin
+  member
+}
+
+model User {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  email     String   @unique
+  name      String
+  avatarUrl String?  @map("avatar_url")
+  role      Role
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  photos   Photo[]
+  albums   Album[]
+  comments Comment[]
+
+  @@map("users")
+}
+
+model Photo {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  r2Key       String    @unique @map("r2_key")
+  thumbKey    String?   @map("thumb_key")
+  uploaderId  String    @map("uploader_id") @db.Uuid
+  caption     String?
+  takenAt     DateTime? @map("taken_at") @db.Timestamptz
+  uploadedAt  DateTime  @default(now()) @map("uploaded_at") @db.Timestamptz
+  width       Int?
+  height      Int?
+  sizeBytes   Int?      @map("size_bytes")
+  contentType String    @map("content_type")
+  blurhash    String?
+
+  uploader    User         @relation(fields: [uploaderId], references: [id])
+  albumPhotos AlbumPhoto[]
+  comments    Comment[]
+  coverFor    Album[]
+
+  @@map("photos")
+}
+
+model Album {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  title        String
+  description  String?
+  coverPhotoId String?  @map("cover_photo_id") @db.Uuid
+  createdById  String   @map("created_by") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  coverPhoto  Photo?       @relation(fields: [coverPhotoId], references: [id])
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  albumPhotos AlbumPhoto[]
+
+  @@map("albums")
+}
+
+model AlbumPhoto {
+  albumId  String @map("album_id") @db.Uuid
+  photoId  String @map("photo_id") @db.Uuid
+  position Int
+
+  album Album @relation(fields: [albumId], references: [id])
+  photo Photo @relation(fields: [photoId], references: [id])
+
+  @@id([albumId, photoId])
+  @@map("album_photos")
+}
+
+model Comment {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  photoId   String   @map("photo_id") @db.Uuid
+  authorId  String   @map("author_id") @db.Uuid
+  body      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  photo  Photo @relation(fields: [photoId], references: [id])
+  author User  @relation(fields: [authorId], references: [id])
+
+  @@map("comments")
+}

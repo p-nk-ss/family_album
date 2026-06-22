@@ -1,0 +1,22 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+/generated/prisma
+
+# Next.js
+.next/
+/out/
+/build
+*.tsbuildinfo
+next-env.d.ts
+
+# Misc
+.DS_Store
+
+# Testing
+playwright-report/
+test-results/
+
+# Local env files
+.env*.local

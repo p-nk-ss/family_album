@@ -1,0 +1,499 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "two_pass_design_workflow",
+        "label": "Two-Pass Design Workflow",
+        "nodes": [
+          "frontend_design_skill_two_pass_process",
+          "frontend_design_skill_token_system",
+          "frontend_design_skill_plan_critique",
+          "frontend_design_skill_signature_element"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.85,
+        "source_file": "/Users/pankaz-mac/Projects/family_albums/.agents/skills/frontend-design/SKILL.md"
+      },
+      {
+        "id": "distinctiveness_principles",
+        "label": "Distinctiveness Design Principles",
+        "nodes": [
+          "frontend_design_skill_hero_as_thesis",
+          "frontend_design_skill_typography_personality",
+          "frontend_design_skill_structure_is_information",
+          "frontend_design_skill_deliberate_motion",
+          "frontend_design_skill_match_complexity_to_vision"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.85,
+        "source_file": "/Users/pankaz-mac/Projects/family_albums/.agents/skills/frontend-design/SKILL.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "Frontend Design",
+      "file_type": "document",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_frontend_design",
+      "community": 0,
+      "norm_label": "frontend design"
+    },
+    {
+      "label": "Ground It In The Subject",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_ground_in_subject",
+      "community": 1,
+      "norm_label": "ground it in the subject"
+    },
+    {
+      "label": "Hero As Thesis",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_hero_as_thesis",
+      "community": 0,
+      "norm_label": "hero as thesis"
+    },
+    {
+      "label": "Typography Carries Personality",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_typography_personality",
+      "community": 0,
+      "norm_label": "typography carries personality"
+    },
+    {
+      "label": "Structure Is Information",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_structure_is_information",
+      "community": 0,
+      "norm_label": "structure is information"
+    },
+    {
+      "label": "Deliberate Motion",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_deliberate_motion",
+      "community": 0,
+      "norm_label": "deliberate motion"
+    },
+    {
+      "label": "Match Complexity To Vision",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_match_complexity_to_vision",
+      "community": 0,
+      "norm_label": "match complexity to vision"
+    },
+    {
+      "label": "Two-Pass Process",
+      "file_type": "concept",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_two_pass_process",
+      "community": 1,
+      "norm_label": "two-pass process"
+    },
+    {
+      "label": "Design Token System",
+      "file_type": "concept",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_token_system",
+      "community": 2,
+      "norm_label": "design token system"
+    },
+    {
+      "label": "Signature Element",
+      "file_type": "concept",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_signature_element",
+      "community": 2,
+      "norm_label": "signature element"
+    },
+    {
+      "label": "AI-Generated Default Looks",
+      "file_type": "concept",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_ai_default_looks",
+      "community": 1,
+      "norm_label": "ai-generated default looks"
+    },
+    {
+      "label": "Plan Critique Against Brief",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_plan_critique",
+      "community": 1,
+      "norm_label": "plan critique against brief"
+    },
+    {
+      "label": "CSS Selector Specificity Caution",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_css_specificity_caution",
+      "community": 1,
+      "norm_label": "css selector specificity caution"
+    },
+    {
+      "label": "Restraint And Self-Critique",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_restraint_self_critique",
+      "community": 2,
+      "norm_label": "restraint and self-critique"
+    },
+    {
+      "label": "Quality Floor",
+      "file_type": "concept",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_quality_floor",
+      "community": 2,
+      "norm_label": "quality floor"
+    },
+    {
+      "label": "Writing As Design Material",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_writing_as_design_material",
+      "community": 3,
+      "norm_label": "writing as design material"
+    },
+    {
+      "label": "User-Side Voice",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_user_side_voice",
+      "community": 3,
+      "norm_label": "user-side voice"
+    },
+    {
+      "label": "Active Voice And Consistency",
+      "file_type": "rationale",
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_skill_active_voice_consistency",
+      "community": 3,
+      "norm_label": "active voice and consistency"
+    },
+    {
+      "label": "Apache License 2.0",
+      "file_type": "document",
+      "source_file": ".agents/skills/frontend-design/LICENSE.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_design_license_apache_2_0",
+      "community": 0,
+      "norm_label": "apache license 2.0"
+    }
+  ],
+  "links": [
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_deliberate_motion",
+      "target": "frontend_design_skill_frontend_design"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_frontend_design",
+      "target": "frontend_design_license_apache_2_0"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_ground_in_subject",
+      "target": "frontend_design_skill_frontend_design"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_hero_as_thesis",
+      "target": "frontend_design_skill_frontend_design"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_match_complexity_to_vision",
+      "target": "frontend_design_skill_frontend_design"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_structure_is_information",
+      "target": "frontend_design_skill_frontend_design"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_typography_personality",
+      "target": "frontend_design_skill_frontend_design"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_writing_as_design_material",
+      "target": "frontend_design_skill_frontend_design"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_ai_default_looks",
+      "target": "frontend_design_skill_ground_in_subject"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_css_specificity_caution",
+      "target": "frontend_design_skill_two_pass_process"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_plan_critique",
+      "target": "frontend_design_skill_two_pass_process"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_two_pass_process",
+      "target": "frontend_design_skill_token_system"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_token_system",
+      "target": "frontend_design_skill_signature_element"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_signature_element",
+      "target": "frontend_design_skill_restraint_self_critique"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_plan_critique",
+      "target": "frontend_design_skill_ai_default_looks"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_restraint_self_critique",
+      "target": "frontend_design_skill_quality_floor"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_active_voice_consistency",
+      "target": "frontend_design_skill_writing_as_design_material"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".agents/skills/frontend-design/SKILL.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_design_skill_user_side_voice",
+      "target": "frontend_design_skill_writing_as_design_material"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "two_pass_design_workflow",
+      "label": "Two-Pass Design Workflow",
+      "nodes": [
+        "frontend_design_skill_two_pass_process",
+        "frontend_design_skill_token_system",
+        "frontend_design_skill_plan_critique",
+        "frontend_design_skill_signature_element"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.85,
+      "source_file": "/Users/pankaz-mac/Projects/family_albums/.agents/skills/frontend-design/SKILL.md"
+    },
+    {
+      "id": "distinctiveness_principles",
+      "label": "Distinctiveness Design Principles",
+      "nodes": [
+        "frontend_design_skill_hero_as_thesis",
+        "frontend_design_skill_typography_personality",
+        "frontend_design_skill_structure_is_information",
+        "frontend_design_skill_deliberate_motion",
+        "frontend_design_skill_match_complexity_to_vision"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.85,
+      "source_file": "/Users/pankaz-mac/Projects/family_albums/.agents/skills/frontend-design/SKILL.md"
+    }
+  ]
+}
