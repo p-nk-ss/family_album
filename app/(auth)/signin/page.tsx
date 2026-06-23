@@ -18,6 +18,14 @@ export default function SignInPage() {
         >
           Sign in with Google
         </button>
+        {process.env.NEXT_PUBLIC_DEV_AUTH === "true" && (
+          <button
+            onClick={() => signIn("dev", { callbackUrl: "/library" })}
+            className="w-full border border-ink/20 text-ink/70 font-sans text-sm py-2.5 px-6 rounded-lg hover:bg-ink/5 transition-colors"
+          >
+            Dev login (local only)
+          </button>
+        )}
       </div>
     </main>
   )
