@@ -34,6 +34,20 @@ export async function POST(request: Request, { params }: Ctx) {
   if (!parsed.success)
     return NextResponse.json({ error: parsed.error.message }, { status: 400 })
 
+  // A photo belongs to exactly one album. If it is already attached somewhere,
+  // reject (409) unless it's already in THIS album (then it's a no-op).
+  const existing = await prisma.albumPhoto.findFirst({
+    where: { photoId: parsed.data.photoId },
+  })
+  if (existing) {
+    if (existing.albumId === albumId)
+      return NextResponse.json({ ok: true }, { status: 200 })
+    return NextResponse.json(
+      { error: "Photo already belongs to another album" },
+      { status: 409 },
+    )
+  }
+
   const count = await prisma.albumPhoto.count({ where: { albumId } })
   await prisma.albumPhoto.create({
     data: { albumId, photoId: parsed.data.photoId, position: count },

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
 import { ReorderGrid } from "@/components/album/ReorderGrid"
 import { AddPhotos } from "@/components/album/AddPhotos"
+import { AlbumUploader } from "@/components/album/AlbumUploader"
 
 export const dynamic = "force-dynamic"
 
@@ -50,6 +51,14 @@ export default async function EditAlbumPage({
       )}
 
       <h2 className="font-serif text-2xl mt-10 mb-4">Add photos</h2>
+      <p className="text-ink/60 text-sm mb-4">
+        Upload photos straight into this album. Each photo lives in one album.
+      </p>
+      <AlbumUploader albumId={id} />
+
+      <h3 className="font-serif text-lg mt-8 mb-3 text-ink/70">
+        Or add an unsorted photo
+      </h3>
       <AddPhotos albumId={id} inAlbum={initial.map((i) => i.photoId)} />
 
       <a

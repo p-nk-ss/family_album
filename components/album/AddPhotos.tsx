@@ -19,7 +19,7 @@ export function AddPhotos({
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("/api/photos")
+    fetch("/api/photos?available=1")
       .then((r) => r.json())
       .then((d) => setPhotos(d.photos ?? []))
       .catch(() => setPhotos([]))
@@ -44,15 +44,11 @@ export function AddPhotos({
   }
 
   if (loading)
-    return <p className="text-ink/50 text-sm">Loading your photos…</p>
+    return <p className="text-ink/50 text-sm">Loading…</p>
   if (photos.length === 0)
     return (
       <p className="text-ink/50 text-sm">
-        No photos yet —{" "}
-        <a href="/upload" className="text-terracotta underline">
-          upload some
-        </a>{" "}
-        first.
+        No unsorted photos — upload above to add photos to this album.
       </p>
     )
 

@@ -47,7 +47,7 @@ export async function POST(request: Request) {
   return NextResponse.json({ id: photo.id }, { status: 201 })
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await requireUser()
   } catch (e) {
@@ -57,7 +57,13 @@ export async function GET() {
     throw e
   }
 
+  // ?available=1 → only photos not yet attached to any album (each photo
+  // belongs to a single album, so the album picker only offers unsorted ones).
+  const onlyAvailable =
+    new URL(request.url).searchParams.get("available") === "1"
+
   const rows = await prisma.photo.findMany({
+    where: onlyAvailable ? { albumPhotos: { none: {} } } : undefined,
     orderBy: [{ takenAt: "desc" }, { uploadedAt: "desc" }],
     take: 200,
   })

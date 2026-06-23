@@ -40,7 +40,7 @@ describe("photos API", () => {
     const { id } = await created.json()
     expect(id).toBeTruthy()
 
-    const list = await GET()
+    const list = await GET(new Request("http://localhost/api/photos"))
     expect(list.status).toBe(200)
     const { photos } = await list.json()
     expect(photos).toHaveLength(1)
@@ -71,7 +71,7 @@ describe("photos API", () => {
     vi.resetModules()
     stubSession(null)
     const { GET } = await import("@/app/api/photos/route")
-    const res = await GET()
+    const res = await GET(new Request("http://localhost/api/photos"))
     expect(res.status).toBe(401)
   })
 })

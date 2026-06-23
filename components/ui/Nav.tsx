@@ -13,7 +13,6 @@ export async function Nav() {
       <div className="flex items-center gap-6 text-sm">
         <Link href="/library">Library</Link>
         <Link href="/on-this-day">On this day</Link>
-        <Link href="/upload">Upload</Link>
         {user ? (
           <div className="flex items-center gap-2 pl-3 border-l border-ink/10">
             {user.image ? (
