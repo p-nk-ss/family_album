@@ -12,6 +12,14 @@ const patchSchema = z.object({
 })
 
 export async function GET(_req: Request, { params }: Ctx) {
+  try {
+    await requireUser()
+  } catch (e) {
+    if (e instanceof UnauthorizedError)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    throw e
+  }
+
   const { id } = await params
   const album = await prisma.album.findUnique({
     where: { id },

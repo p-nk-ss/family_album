@@ -43,6 +43,26 @@ describe("albums API", () => {
     expect(res.status).toBe(401)
   })
 
+  it("returns 401 for GET /api/albums without session", async () => {
+    vi.resetModules()
+    stubSession(null)
+    const { GET } = await import("@/app/api/albums/route")
+    const res = await GET()
+    expect(res.status).toBe(401)
+  })
+
+  it("returns 401 for GET /api/albums/[id] without session", async () => {
+    vi.resetModules()
+    stubSession(null)
+    const fakeId = "00000000-0000-0000-0000-000000000001"
+    const { GET } = await import("@/app/api/albums/[id]/route")
+    const res = await GET(
+      jreq(`/api/albums/${fakeId}`, "GET"),
+      { params: Promise.resolve({ id: fakeId }) },
+    )
+    expect(res.status).toBe(401)
+  })
+
   it("returns 400 for POST with invalid body", async () => {
     const { POST } = await import("@/app/api/albums/route")
     const res = await POST(jreq("/api/albums", "POST", { title: "" }))

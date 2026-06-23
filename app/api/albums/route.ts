@@ -42,6 +42,14 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  try {
+    await requireUser()
+  } catch (e) {
+    if (e instanceof UnauthorizedError)
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    throw e
+  }
+
   const albums = await prisma.album.findMany({
     orderBy: { createdAt: "desc" },
     include: {
