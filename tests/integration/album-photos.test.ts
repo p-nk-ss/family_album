@@ -92,6 +92,36 @@ describe("album photos", () => {
     expect(rows[0].photoId).toBe(p2)
   })
 
+  it("rejects adding a photo that already belongs to another album (409)", async () => {
+    const { POST } = await import("@/app/api/albums/[id]/photos/route")
+
+    // p1 goes into the first album.
+    const first = await POST(jreq("POST", { photoId: p1 }), ctx())
+    expect(first.status).toBe(201)
+
+    // A second album cannot claim the same photo.
+    const album2 = await prisma.album.create({
+      data: { title: "B", createdById: userId },
+    })
+    const req = new Request(
+      `http://localhost/api/albums/${album2.id}/photos`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ photoId: p1 }),
+      },
+    )
+    const res = await POST(req, { params: Promise.resolve({ id: album2.id }) })
+    expect(res.status).toBe(409)
+
+    // Re-adding to the SAME album is a no-op (200), not a duplicate.
+    const again = await POST(jreq("POST", { photoId: p1 }), ctx())
+    expect(again.status).toBe(200)
+    expect(
+      await prisma.albumPhoto.count({ where: { albumId, photoId: p1 } }),
+    ).toBe(1)
+  })
+
   it("returns 401 without session", async () => {
     vi.resetModules()
     stubSession(null)

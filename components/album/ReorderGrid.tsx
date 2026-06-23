@@ -41,6 +41,16 @@ export function ReorderGrid({
     }
   }
 
+  async function removePhoto(photoId: string) {
+    if (!confirm("Delete this photo? It will be removed permanently.")) return
+    const res = await fetch(`/api/photos/${photoId}`, { method: "DELETE" })
+    if (res.ok) {
+      setItems((prev) => prev.filter((i) => i.photoId !== photoId))
+      if (cover === photoId) setCover(null)
+      router.refresh()
+    }
+  }
+
   return (
     <Reorder.Group
       axis="y"
@@ -75,6 +85,13 @@ export function ReorderGrid({
                 Set as cover
               </button>
             )}
+            <button
+              onClick={() => removePhoto(item.photoId)}
+              aria-label="Delete photo"
+              className="ml-auto text-sm text-ink/40 hover:text-red-700 transition-colors"
+            >
+              Delete
+            </button>
           </Reorder.Item>
         )
       })}

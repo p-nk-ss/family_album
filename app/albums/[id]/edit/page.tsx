@@ -2,8 +2,8 @@ import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
 import { ReorderGrid } from "@/components/album/ReorderGrid"
-import { AddPhotos } from "@/components/album/AddPhotos"
 import { AlbumUploader } from "@/components/album/AlbumUploader"
+import { DeleteAlbumButton } from "@/components/album/DeleteAlbumButton"
 
 export const dynamic = "force-dynamic"
 
@@ -56,17 +56,15 @@ export default async function EditAlbumPage({
       </p>
       <AlbumUploader albumId={id} />
 
-      <h3 className="font-serif text-lg mt-8 mb-3 text-ink/70">
-        Or add an unsorted photo
-      </h3>
-      <AddPhotos albumId={id} inAlbum={initial.map((i) => i.photoId)} />
-
-      <a
-        href={`/albums/${id}`}
-        className="mt-10 inline-block rounded-full bg-terracotta px-6 py-2 text-paper"
-      >
-        View story
-      </a>
+      <div className="mt-12 flex items-center justify-between border-t border-ink/10 pt-6">
+        <a
+          href={`/albums/${id}`}
+          className="inline-block rounded-full bg-terracotta px-6 py-2 text-paper"
+        >
+          View story
+        </a>
+        <DeleteAlbumButton albumId={id} />
+      </div>
     </main>
   )
 }

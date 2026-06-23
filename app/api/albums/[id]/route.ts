@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { prisma } from "@/lib/db"
 import { requireUser, UnauthorizedError } from "@/lib/session"
+import { deleteObjects } from "@/lib/r2"
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -69,17 +70,30 @@ export async function DELETE(_req: Request, { params }: Ctx) {
     throw e
   }
 
-  const album = await prisma.album.findUnique({ where: { id } })
+  const album = await prisma.album.findUnique({
+    where: { id },
+    include: { albumPhotos: { include: { photo: true } } },
+  })
   if (!album) return new NextResponse(null, { status: 404 })
 
   if (album.createdById !== user.id)
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  // No onDelete cascades — delete albumPhoto rows first, then the album
+  // Photos belong to this album, so deleting it deletes its photos too.
+  // No onDelete cascades: unset the cover, then drop comments → album links →
+  // photos → album, in FK-safe order.
+  const photos = album.albumPhotos.map((ap) => ap.photo)
+  const photoIds = photos.map((p) => p.id)
+
   await prisma.$transaction([
+    prisma.album.update({ where: { id }, data: { coverPhotoId: null } }),
+    prisma.comment.deleteMany({ where: { photoId: { in: photoIds } } }),
     prisma.albumPhoto.deleteMany({ where: { albumId: id } }),
+    prisma.photo.deleteMany({ where: { id: { in: photoIds } } }),
     prisma.album.delete({ where: { id } }),
   ])
+
+  await deleteObjects(photos.flatMap((p) => [p.r2Key, p.thumbKey]))
 
   return new NextResponse(null, { status: 204 })
 }
