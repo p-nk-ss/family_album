@@ -2,6 +2,7 @@ import Link from "next/link"
 import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
 import { AlbumCard } from "@/components/library/AlbumCard"
+import { StaggerGrid } from "@/components/motion/StaggerGrid"
 
 export const dynamic = "force-dynamic"
 
@@ -54,11 +55,11 @@ export default async function LibraryPage() {
           New album
         </Link>
       </div>
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <StaggerGrid className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
           <AlbumCard key={c.id} {...c} />
         ))}
-      </div>
+      </StaggerGrid>
     </main>
   )
 }
