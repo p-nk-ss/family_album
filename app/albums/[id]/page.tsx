@@ -36,7 +36,7 @@ export default async function AlbumPage({
   )
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
+    <main className="mx-auto max-w-5xl px-6 py-12 sm:py-16">
       <div className="mb-12 flex items-center justify-between text-sm">
         <Link
           href="/library"

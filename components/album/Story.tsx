@@ -71,14 +71,22 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
 
   return (
     <>
-      <div className="space-y-20 sm:space-y-28">
+      {/* editorial masonry that keeps the curated order and each photo's
+          aspect ratio, instead of one tall vertical column */}
+      <div className="gap-4 [column-fill:balance] columns-2 lg:columns-3">
         {photos.map((p, i) => (
           <motion.figure
             key={p.id}
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 40 }}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ type: "spring", stiffness: 90, damping: 20 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{
+              type: "spring",
+              stiffness: 160,
+              damping: 24,
+              delay: Math.min(i, 8) * 0.04,
+            }}
+            className="mb-4 break-inside-avoid"
           >
             <motion.button
               type="button"
@@ -97,7 +105,7 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
               />
             </motion.button>
             {p.caption && (
-              <figcaption className="mt-4 text-center font-serif text-lg italic text-ink/55">
+              <figcaption className="mt-2 px-1 font-serif text-sm italic leading-snug text-ink/50">
                 {p.caption}
               </figcaption>
             )}
