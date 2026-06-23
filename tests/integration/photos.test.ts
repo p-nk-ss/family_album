@@ -39,6 +39,10 @@ describe("photos API", () => {
     expect(photos[0].id).toBe(id)
     expect(photos[0].thumbUrl).toContain("X-Amz-Signature")
     expect(photos[0].blurhash).toBe(validBody.blurhash)
+    // takenAt ISO round-trip (ISO in → Date stored → ISO out) and dimensions
+    expect(photos[0].takenAt).toBe(validBody.takenAt)
+    expect(photos[0].width).toBe(validBody.width)
+    expect(photos[0].height).toBe(validBody.height)
   })
 
   it("rejects an invalid body", async () => {
