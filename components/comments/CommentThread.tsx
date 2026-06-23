@@ -1,52 +1,75 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-type Comment = { id: string; body: string; authorName: string | null; createdAt: string }
+type Comment = {
+  id: string
+  body: string
+  authorName: string | null
+  createdAt: string
+}
 
 export function CommentThread({ photoId }: { photoId: string }) {
   const [comments, setComments] = useState<Comment[]>([])
   const [body, setBody] = useState("")
+  const [pending, setPending] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   async function load() {
     const res = await fetch(`/api/photos/${photoId}/comments`)
-    if (res.ok) {
-      setComments((await res.json()).comments)
-    }
+    if (res.ok) setComments((await res.json()).comments)
   }
 
   useEffect(() => {
+    setComments([])
     load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photoId])
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
-    if (!body.trim()) return
+    const text = body.trim()
+    if (!text || pending) return
+    setPending(true)
     await fetch(`/api/photos/${photoId}/comments`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ body }),
+      body: JSON.stringify({ body: text }),
     })
     setBody("")
-    load()
+    await load()
+    setPending(false)
+    inputRef.current?.focus()
   }
 
   return (
-    <div className="mt-8 space-y-4">
-      {comments.map((c) => (
-        <div key={c.id}>
-          <span className="font-medium">{c.authorName ?? "Someone"}:</span>{" "}
-          <span className="text-ink/80">{c.body}</span>
-        </div>
-      ))}
-      <form onSubmit={submit} className="flex gap-2">
+    <div className="space-y-4">
+      {comments.length > 0 ? (
+        <ul className="space-y-3">
+          {comments.map((c) => (
+            <li key={c.id} className="text-sm leading-relaxed">
+              <span className="font-medium text-terracotta">
+                {c.authorName ?? "Someone"}
+              </span>
+              <span className="ml-2 text-ink/80">{c.body}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-sm text-ink/40">Be the first to leave a memory.</p>
+      )}
+      <form onSubmit={submit} className="flex items-center gap-3">
         <input
+          ref={inputRef}
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Add a memory…"
-          className="flex-1 border-b border-ink/20 bg-transparent py-2 outline-none"
+          className="flex-1 border-b border-ink/15 bg-transparent py-2 text-sm outline-none transition-colors placeholder:text-ink/30 focus:border-terracotta"
         />
-        <button type="submit" className="text-terracotta">
+        <button
+          type="submit"
+          disabled={pending || !body.trim()}
+          className="text-sm font-medium text-terracotta transition-opacity disabled:opacity-30"
+        >
           Post
         </button>
       </form>

@@ -22,20 +22,27 @@ export function BlurUpImage({
   useEffect(() => {
     if (!blurhash || !canvasRef.current) return
     const pixels = decode(blurhash, 32, 32)
-    const ctx = canvasRef.current.getContext("2d")!
+    const ctx = canvasRef.current.getContext("2d")
+    if (!ctx) return
     const imageData = ctx.createImageData(32, 32)
     imageData.data.set(pixels)
     ctx.putImageData(imageData, 0, 0)
   }, [blurhash])
 
+  // Reserve space from the known aspect ratio so the blur placeholder holds
+  // the layout — no pop-in, no layout shift while the full image loads.
+  const aspectRatio = width && height ? `${width} / ${height}` : undefined
+
   return (
-    <div className="relative overflow-hidden rounded-lg bg-paper-200">
+    <div className="relative w-full overflow-hidden bg-paper-200" style={{ aspectRatio }}>
       {blurhash && (
         <canvas
           ref={canvasRef}
           width={32}
           height={32}
-          className={`absolute inset-0 h-full w-full transition-opacity duration-500 ${loaded ? "opacity-0" : "opacity-100"}`}
+          className={`absolute inset-0 h-full w-full scale-105 transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+            loaded ? "opacity-0" : "opacity-100"
+          }`}
         />
       )}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -44,7 +51,9 @@ export function BlurUpImage({
         alt={alt}
         loading="lazy"
         onLoad={() => setLoaded(true)}
-        className={`block w-full transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+          loaded ? "opacity-100" : "opacity-0"
+        }`}
       />
     </div>
   )

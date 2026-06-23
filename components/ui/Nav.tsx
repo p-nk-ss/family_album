@@ -6,13 +6,18 @@ export async function Nav() {
   const user = session?.user
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 border-b border-ink/10">
-      <Link href="/" className="font-serif text-xl">
-        Family Albums
+    <nav className="sticky top-0 z-40 flex items-center justify-between border-b border-ink/10 bg-paper/70 px-6 py-4 backdrop-blur-xl backdrop-saturate-150">
+      <Link href="/" className="group flex items-center gap-2.5">
+        <span className="h-2 w-2 rounded-full bg-terracotta transition-transform duration-300 group-hover:scale-125" />
+        <span className="font-serif text-xl tracking-tight">Family Albums</span>
       </Link>
-      <div className="flex items-center gap-6 text-sm">
-        <Link href="/library">Library</Link>
-        <Link href="/on-this-day">On this day</Link>
+      <div className="flex items-center gap-6 text-sm text-ink/70">
+        <Link href="/library" className="hover:text-ink transition-colors">
+          Library
+        </Link>
+        <Link href="/on-this-day" className="hover:text-ink transition-colors">
+          On this day
+        </Link>
         {user ? (
           <div className="flex items-center gap-2 pl-3 border-l border-ink/10">
             {user.image ? (

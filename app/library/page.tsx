@@ -1,8 +1,7 @@
 import Link from "next/link"
 import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
-import { AlbumCard } from "@/components/library/AlbumCard"
-import { StaggerGrid } from "@/components/motion/StaggerGrid"
+import { LibraryView, type LibraryCard } from "@/components/library/LibraryView"
 
 export const dynamic = "force-dynamic"
 
@@ -19,7 +18,7 @@ export default async function LibraryPage() {
     },
   })
 
-  const cards = await Promise.all(
+  const cards: LibraryCard[] = await Promise.all(
     albums.map(async (a) => {
       const cover = a.coverPhoto ?? a.albumPhotos[0]?.photo ?? null
       const dates = a.albumPhotos
@@ -30,15 +29,16 @@ export default async function LibraryPage() {
         title: a.title,
         author: a.createdBy?.name ?? null,
         photoCount: a.albumPhotos.length,
-        coverThumbUrl: cover
+        coverUrl: cover
           ? await presignGet({ key: cover.thumbKey ?? cover.r2Key })
           : null,
+        coverFullUrl: cover ? await presignGet({ key: cover.r2Key }) : null,
+        coverW: cover?.width ?? null,
+        coverH: cover?.height ?? null,
         dateRange:
           dates.length > 0
             ? {
-                from: new Date(
-                  Math.min(...dates.map((d) => +d)),
-                ).toISOString(),
+                from: new Date(Math.min(...dates.map((d) => +d))).toISOString(),
                 to: new Date(Math.max(...dates.map((d) => +d))).toISOString(),
               }
             : null,
@@ -47,21 +47,41 @@ export default async function LibraryPage() {
   )
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12">
-      <div className="flex items-baseline justify-between mb-10">
-        <h1 className="font-serif text-5xl">The Library</h1>
+    <main className="mx-auto max-w-6xl px-6 py-12">
+      <div className="mb-10 flex items-end justify-between gap-4">
+        <div>
+          <p className="mb-2 text-xs uppercase tracking-[0.3em] text-terracotta">
+            our collection
+          </p>
+          <h1 className="font-serif text-5xl font-light tracking-tight">
+            The Library
+          </h1>
+        </div>
         <Link
           href="/albums/new"
-          className="rounded-full bg-terracotta px-5 py-2 text-paper text-sm"
+          className="shrink-0 rounded-full border border-ink/15 px-5 py-2 text-sm text-ink/80 transition-colors duration-200 hover:border-terracotta hover:text-terracotta"
         >
-          New album
+          + New album
         </Link>
       </div>
-      <StaggerGrid className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c) => (
-          <AlbumCard key={c.id} {...c} />
-        ))}
-      </StaggerGrid>
+
+      {cards.length === 0 ? (
+        <div className="rounded-2xl border border-ink/10 px-6 py-24 text-center">
+          <h2 className="font-serif text-3xl text-ink/80">No albums yet</h2>
+          <p className="mx-auto mt-3 max-w-sm text-ink/50">
+            An album is a story — a title, a cover, and photos in the order you
+            choose. Start the first one.
+          </p>
+          <Link
+            href="/albums/new"
+            className="mt-8 inline-block rounded-full bg-terracotta px-6 py-2.5 font-medium text-paper transition-transform duration-200 ease-out active:scale-[0.97]"
+          >
+            Create an album
+          </Link>
+        </div>
+      ) : (
+        <LibraryView featured={cards[0]} rest={cards.slice(1)} />
+      )}
     </main>
   )
 }

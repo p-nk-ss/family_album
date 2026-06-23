@@ -2,7 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
-import { StoryPhoto } from "@/components/album/StoryPhoto"
+import { Story, type StoryPhoto } from "@/components/album/Story"
 
 export const dynamic = "force-dynamic"
 
@@ -23,10 +23,11 @@ export default async function AlbumPage({
   })
   if (!album) notFound()
 
-  const photos = await Promise.all(
+  const photos: StoryPhoto[] = await Promise.all(
     album.albumPhotos.map(async (ap) => ({
       id: ap.photo.id,
-      src: await presignGet({ key: ap.photo.r2Key }),
+      fullUrl: await presignGet({ key: ap.photo.r2Key }),
+      thumbUrl: await presignGet({ key: ap.photo.thumbKey ?? ap.photo.r2Key }),
       blurhash: ap.photo.blurhash,
       width: ap.photo.width,
       height: ap.photo.height,
@@ -35,32 +36,47 @@ export default async function AlbumPage({
   )
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
-      <div className="mb-10 flex items-center justify-between text-sm">
+    <main className="mx-auto max-w-3xl px-6 py-12 sm:py-16">
+      <div className="mb-12 flex items-center justify-between text-sm">
         <Link
           href="/library"
-          className="text-ink/60 hover:text-terracotta transition-colors"
+          className="text-ink/55 transition-colors hover:text-terracotta"
         >
           ← All albums
         </Link>
         <Link
           href={`/albums/${id}/edit`}
-          className="text-ink/60 hover:text-terracotta transition-colors"
+          className="text-ink/55 transition-colors hover:text-terracotta"
         >
           Edit album
         </Link>
       </div>
-      <header className="mb-16 text-center">
-        <h1 className="font-serif text-6xl">{album.title}</h1>
+
+      <header className="mb-16 text-center sm:mb-24">
+        <h1 className="font-serif text-5xl font-light leading-[1.05] tracking-tight sm:text-7xl">
+          {album.title}
+        </h1>
         {album.description && (
-          <p className="mt-6 text-lg text-ink/70 whitespace-pre-line">
+          <p className="mx-auto mt-7 max-w-xl whitespace-pre-line text-lg leading-relaxed text-ink/65">
             {album.description}
           </p>
         )}
       </header>
-      {photos.map((p) => (
-        <StoryPhoto key={p.id} {...p} />
-      ))}
+
+      {photos.length > 0 ? (
+        <Story photos={photos} />
+      ) : (
+        <p className="text-center text-ink/45">
+          This album has no photos yet.{" "}
+          <Link
+            href={`/albums/${id}/edit`}
+            className="text-terracotta hover:underline"
+          >
+            Add some
+          </Link>
+          .
+        </p>
+      )}
     </main>
   )
 }
