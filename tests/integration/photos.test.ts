@@ -1,9 +1,15 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { POST, GET } from "@/app/api/photos/route"
-import { resetDb } from "../helpers/db"
+import { describe, it, expect, beforeEach, vi } from "vitest"
+import { resetDb, seedUser } from "../helpers/db"
+import { stubSession } from "../helpers/session-stub"
+
+let userId: string
 
 beforeEach(async () => {
+  vi.resetModules()
   await resetDb()
+  const user = await seedUser()
+  userId = user.id
+  stubSession({ id: userId })
 })
 
 function postReq(body: unknown) {
@@ -27,6 +33,8 @@ const validBody = {
 
 describe("photos API", () => {
   it("creates a photo row and lists it with a signed thumb url", async () => {
+    const { POST, GET } = await import("@/app/api/photos/route")
+
     const created = await POST(postReq(validBody))
     expect(created.status).toBe(201)
     const { id } = await created.json()
@@ -46,7 +54,24 @@ describe("photos API", () => {
   })
 
   it("rejects an invalid body", async () => {
+    const { POST } = await import("@/app/api/photos/route")
     const res = await POST(postReq({ r2Key: "x" }))
     expect(res.status).toBe(400)
+  })
+
+  it("returns 401 without a session (POST)", async () => {
+    vi.resetModules()
+    stubSession(null)
+    const { POST } = await import("@/app/api/photos/route")
+    const res = await POST(postReq(validBody))
+    expect(res.status).toBe(401)
+  })
+
+  it("returns 401 without a session (GET)", async () => {
+    vi.resetModules()
+    stubSession(null)
+    const { GET } = await import("@/app/api/photos/route")
+    const res = await GET()
+    expect(res.status).toBe(401)
   })
 })

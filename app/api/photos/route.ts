@@ -2,19 +2,19 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/db"
 import { photoMetadataSchema } from "@/lib/validation"
 import { signPhotoList } from "@/lib/dto"
-
-async function phase2UploaderId() {
-  // Phase 2: no auth yet. Attribute uploads to a placeholder user.
-  // Phase 3 replaces this with the session user via requireUser().
-  const u = await prisma.user.upsert({
-    where: { email: "anon@local" },
-    update: {},
-    create: { email: "anon@local", name: "Anon", role: "member" },
-  })
-  return u.id
-}
+import { requireUser, UnauthorizedError } from "@/lib/session"
 
 export async function POST(request: Request) {
+  let uploaderId: string
+  try {
+    uploaderId = (await requireUser()).id
+  } catch (e) {
+    if (e instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    throw e
+  }
+
   let body: unknown
   try {
     body = await request.json()
@@ -28,7 +28,6 @@ export async function POST(request: Request) {
   }
 
   const d = parsed.data
-  const uploaderId = await phase2UploaderId()
 
   const photo = await prisma.photo.create({
     data: {
@@ -49,6 +48,15 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
+  try {
+    await requireUser()
+  } catch (e) {
+    if (e instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    throw e
+  }
+
   const rows = await prisma.photo.findMany({
     orderBy: [{ takenAt: "desc" }, { uploadedAt: "desc" }],
     take: 200,

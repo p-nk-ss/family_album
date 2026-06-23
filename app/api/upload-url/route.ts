@@ -2,8 +2,19 @@ import { NextResponse } from "next/server"
 import { uploadUrlSchema, ValidationError } from "@/lib/validation"
 import { photoKey, thumbKeyFor } from "@/lib/keys"
 import { presignPut } from "@/lib/r2"
+import { requireUser, UnauthorizedError } from "@/lib/session"
 
 export async function POST(request: Request) {
+  let userId: string
+  try {
+    userId = (await requireUser()).id
+  } catch (e) {
+    if (e instanceof UnauthorizedError) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    throw e
+  }
+
   let body: unknown
   try {
     body = await request.json()
@@ -16,8 +27,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.message }, { status: 400 })
   }
 
-  // Phase 1: hardcoded userId. Phase 3 will replace this with the session user id.
-  const userId = "anon"
   const { contentType, sizeBytes } = parsed.data
   const originalKey = photoKey(userId, contentType)
   const thumbKey = thumbKeyFor(originalKey)
