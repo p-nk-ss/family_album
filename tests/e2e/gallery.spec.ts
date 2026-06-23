@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test"
 import path from "node:path"
 
-// Skipped: pending valid R2 credentials in .env (R2_* malformed); unskip once fixed
+// Skipped: pending valid R2 credentials in .env (R2_* malformed); also needs rework
+// post-R2 because /library now renders album cards (not a photo grid) — the
+// photo-grid assertion below is stale and must be rewritten once R2 creds are set.
 test.skip("uploaded photo appears in the gallery", async ({ page }) => {
   await page.goto("/upload")
   await page.setInputFiles('input[type="file"]', path.join(__dirname, "../fixtures/sample.jpg"))
