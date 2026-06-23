@@ -17,6 +17,13 @@ export function BlurUpImage({
   alt: string
 }) {
   const [loaded, setLoaded] = useState(false)
+  // Seed the aspect ratio from stored dimensions (avoids layout shift), but
+  // correct it from the actual decoded image on load — the thumbnail is always
+  // correctly oriented, so this fixes photos whose stored dims ignored EXIF
+  // rotation.
+  const [ratio, setRatio] = useState<number | undefined>(
+    width && height ? width / height : undefined,
+  )
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -29,12 +36,11 @@ export function BlurUpImage({
     ctx.putImageData(imageData, 0, 0)
   }, [blurhash])
 
-  // Reserve space from the known aspect ratio so the blur placeholder holds
-  // the layout — no pop-in, no layout shift while the full image loads.
-  const aspectRatio = width && height ? `${width} / ${height}` : undefined
-
   return (
-    <div className="relative w-full overflow-hidden bg-paper-200" style={{ aspectRatio }}>
+    <div
+      className="relative w-full overflow-hidden bg-paper-200"
+      style={{ aspectRatio: ratio ? String(ratio) : undefined }}
+    >
       {blurhash && (
         <canvas
           ref={canvasRef}
@@ -50,7 +56,12 @@ export function BlurUpImage({
         src={src}
         alt={alt}
         loading="lazy"
-        onLoad={() => setLoaded(true)}
+        onLoad={(e) => {
+          setLoaded(true)
+          const t = e.currentTarget
+          if (t.naturalWidth && t.naturalHeight)
+            setRatio(t.naturalWidth / t.naturalHeight)
+        }}
         className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
           loaded ? "opacity-100" : "opacity-0"
         }`}

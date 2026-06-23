@@ -8,8 +8,18 @@ async function loadBitmap(file: File): Promise<ImageBitmap> {
 export async function makeThumbnail(
   file: File,
   maxEdge = 600
-): Promise<{ blob: Blob; width: number; height: number }> {
+): Promise<{
+  blob: Blob
+  width: number
+  height: number
+  sourceWidth: number
+  sourceHeight: number
+}> {
   const bitmap = await loadBitmap(file)
+  // bitmap dims are already orientation-corrected (imageOrientation: from-image),
+  // so they are the TRUE display dimensions — unlike raw EXIF width/height.
+  const sourceWidth = bitmap.width
+  const sourceHeight = bitmap.height
   const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height))
   const width = Math.round(bitmap.width * scale)
   const height = Math.round(bitmap.height * scale)
@@ -20,7 +30,7 @@ export async function makeThumbnail(
   const blob = await new Promise<Blob>((resolve) =>
     canvas.toBlob((b) => resolve(b!), "image/jpeg", 0.8)
   )
-  return { blob, width, height }
+  return { blob, width, height, sourceWidth, sourceHeight }
 }
 
 export async function smallPixels(

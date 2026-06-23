@@ -93,7 +93,10 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
               layoutId={reduce ? undefined : `ph-${p.id}`}
               onClick={() => open(i)}
               aria-label="Open photo"
-              className="block w-full cursor-zoom-in overflow-hidden rounded-xl [box-shadow:var(--glow-photo)] transition-transform duration-500 ease-out hover:-translate-y-1"
+              whileHover={reduce ? undefined : { y: -6 }}
+              whileTap={reduce ? undefined : { scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 300, damping: 24 }}
+              className="block w-full cursor-zoom-in overflow-hidden rounded-xl [box-shadow:var(--glow-photo)]"
               style={{ opacity: index === i ? 0 : 1 }}
             >
               <BlurUpImage

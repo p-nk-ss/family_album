@@ -51,8 +51,9 @@ export async function uploadPhotoFile(
       thumbKey,
       contentType: file.type,
       sizeBytes: file.size,
-      width: exif.width,
-      height: exif.height,
+      // orientation-corrected decoded dimensions (EXIF dims ignore rotation)
+      width: thumb.sourceWidth ?? exif.width,
+      height: thumb.sourceHeight ?? exif.height,
       takenAt: exif.takenAt,
       blurhash,
     }),
