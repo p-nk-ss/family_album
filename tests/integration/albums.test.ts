@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import { resetDb, seedUser } from "../helpers/db"
 import { stubSession } from "../helpers/session-stub"
+import { prisma } from "@/lib/db"
 
 let userId: string
 
@@ -86,6 +87,36 @@ describe("albums API", () => {
       { params: Promise.resolve({ id }) },
     )
     expect(res.status).toBe(204)
+  })
+
+  it("deletes an album that contains photos (cascade-safe transaction)", async () => {
+    const { POST } = await import("@/app/api/albums/route")
+    const created = await POST(jreq("/api/albums", "POST", { title: "Has Photos" }))
+    const { id } = await created.json()
+
+    // Seed a photo and link it into the album so deleteMany has work to do.
+    const photo = await prisma.photo.create({
+      data: {
+        r2Key: "photos/u/del.jpg",
+        contentType: "image/jpeg",
+        uploaderId: userId,
+      },
+    })
+    await prisma.albumPhoto.create({
+      data: { albumId: id, photoId: photo.id, position: 0 },
+    })
+
+    const { DELETE } = await import("@/app/api/albums/[id]/route")
+    const res = await DELETE(
+      jreq(`/api/albums/${id}`, "DELETE"),
+      { params: Promise.resolve({ id }) },
+    )
+    expect(res.status).toBe(204)
+
+    // Album and its albumPhoto rows are gone; the photo itself survives.
+    expect(await prisma.album.findUnique({ where: { id } })).toBeNull()
+    expect(await prisma.albumPhoto.findMany({ where: { albumId: id } })).toHaveLength(0)
+    expect(await prisma.photo.findUnique({ where: { id: photo.id } })).not.toBeNull()
   })
 
   it("GET /api/albums/[id] returns album by id", async () => {

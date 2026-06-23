@@ -89,11 +89,20 @@ export async function PATCH(request: Request, { params }: Ctx) {
 
   const current = await prisma.albumPhoto.findMany({ where: { albumId } })
 
-  // applyReorder validates the permutation and throws if invalid
-  const next = applyReorder(
-    current.map((c) => ({ photoId: c.photoId, position: c.position })),
-    parsed.data.orderedPhotoIds,
-  )
+  // applyReorder validates the permutation and throws if invalid — bad client
+  // input (wrong ids, duplicates, wrong length) is a 400, not a 500.
+  let next
+  try {
+    next = applyReorder(
+      current.map((c) => ({ photoId: c.photoId, position: c.position })),
+      parsed.data.orderedPhotoIds,
+    )
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "Invalid reorder" },
+      { status: 400 },
+    )
+  }
 
   await prisma.$transaction(
     next.map((n) =>

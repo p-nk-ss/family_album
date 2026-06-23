@@ -100,13 +100,12 @@ describe("album photos", () => {
     expect(res.status).toBe(401)
   })
 
-  it("throws when reordering with invalid permutation", async () => {
+  it("returns 400 when reordering with invalid permutation", async () => {
     const { POST, PATCH } = await import("@/app/api/albums/[id]/photos/route")
     await POST(jreq("POST", { photoId: p1 }), ctx())
 
     // Attempt to reorder with a different photoId than what's in the album
-    await expect(
-      PATCH(jreq("PATCH", { orderedPhotoIds: [p2] }), ctx()),
-    ).rejects.toThrow()
+    const res = await PATCH(jreq("PATCH", { orderedPhotoIds: [p2] }), ctx())
+    expect(res.status).toBe(400)
   })
 })
