@@ -29,6 +29,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
         token.userId = dbUser.id
         token.role = dbUser.role
+        token.name = dbUser.name
+        token.picture = dbUser.avatarUrl ?? null
       }
       return token
     },

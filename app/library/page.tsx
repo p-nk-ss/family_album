@@ -11,6 +11,7 @@ export default async function LibraryPage() {
     orderBy: { createdAt: "desc" },
     include: {
       coverPhoto: true,
+      createdBy: { select: { name: true } },
       albumPhotos: {
         include: { photo: true },
         orderBy: { position: "asc" },
@@ -27,6 +28,7 @@ export default async function LibraryPage() {
       return {
         id: a.id,
         title: a.title,
+        author: a.createdBy?.name ?? null,
         photoCount: a.albumPhotos.length,
         coverThumbUrl: cover
           ? await presignGet({ key: cover.thumbKey ?? cover.r2Key })

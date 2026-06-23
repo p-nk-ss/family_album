@@ -4,12 +4,14 @@ import { PressableCard } from "@/components/motion/PressableCard"
 export function AlbumCard({
   id,
   title,
+  author,
   coverThumbUrl,
   photoCount,
   dateRange,
 }: {
   id: string
   title: string
+  author?: string | null
   coverThumbUrl: string | null
   photoCount: number
   dateRange: { from: string; to: string } | null
@@ -40,6 +42,9 @@ export function AlbumCard({
         <p className="text-sm text-ink/50">
           {photoCount} photos{range && ` · ${range}`}
         </p>
+        {author && (
+          <p className="mt-0.5 text-xs text-ink/40">by {author}</p>
+        )}
       </Link>
     </PressableCard>
   )

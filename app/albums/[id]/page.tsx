@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
@@ -35,6 +36,20 @@ export default async function AlbumPage({
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-16">
+      <div className="mb-10 flex items-center justify-between text-sm">
+        <Link
+          href="/library"
+          className="text-ink/60 hover:text-terracotta transition-colors"
+        >
+          ← All albums
+        </Link>
+        <Link
+          href={`/albums/${id}/edit`}
+          className="text-ink/60 hover:text-terracotta transition-colors"
+        >
+          Edit album
+        </Link>
+      </div>
       <header className="mb-16 text-center">
         <h1 className="font-serif text-6xl">{album.title}</h1>
         {album.description && (

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { makeThumbnail, smallPixels } from "@/lib/image-client"
 import { encodeBlurhash } from "@/lib/blurhash"
 import { parseExif } from "@/lib/exif"
@@ -9,6 +10,7 @@ export function Uploader() {
   const [done, setDone] = useState(false)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -54,7 +56,9 @@ export function Uploader() {
         }),
       })
       if (!metaRes.ok) throw new Error((await metaRes.json()).error ?? "save failed")
+      setPreview(URL.createObjectURL(thumb.blob))
       setDone(true)
+      input.value = ""
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed")
     } finally {
@@ -72,8 +76,32 @@ export function Uploader() {
       >
         {busy ? "Uploading…" : "Upload"}
       </button>
-      {done && <p data-testid="upload-done" className="text-terracotta">Saved ✓</p>}
       {error && <p className="text-red-700 text-sm">{error}</p>}
+      {done && (
+        <div
+          data-testid="upload-done"
+          className="flex items-center gap-4 rounded-lg bg-paper-200 p-4"
+        >
+          {preview && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={preview}
+              alt=""
+              className="h-16 w-16 rounded object-cover"
+            />
+          )}
+          <div className="space-y-1 text-sm">
+            <p className="text-terracotta font-medium">Saved to your library ✓</p>
+            <p className="text-ink/60">
+              Add it to{" "}
+              <Link href="/albums/new" className="text-terracotta underline">
+                a new album
+              </Link>{" "}
+              or an existing one&rsquo;s editor.
+            </p>
+          </div>
+        </div>
+      )}
     </form>
   )
 }
