@@ -59,8 +59,14 @@ export function BlurUpImage({
         onLoad={(e) => {
           setLoaded(true)
           const t = e.currentTarget
-          if (t.naturalWidth && t.naturalHeight)
-            setRatio(t.naturalWidth / t.naturalHeight)
+          if (t.naturalWidth && t.naturalHeight) {
+            const next = t.naturalWidth / t.naturalHeight
+            // Only resize if the seeded ratio was actually wrong — avoids a
+            // late layout change on a layoutId element (which fought hover).
+            setRatio((prev) =>
+              prev && Math.abs(prev - next) < 0.01 ? prev : next,
+            )
+          }
         }}
         className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
           loaded ? "opacity-100" : "opacity-0"

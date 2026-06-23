@@ -23,12 +23,10 @@ export type StoryPhoto = {
 export function Story({ photos }: { photos: StoryPhoto[] }) {
   const reduce = useReducedMotion()
   const [index, setIndex] = useState<number | null>(null)
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
   const [direction, setDirection] = useState(0)
 
   const open = useCallback((i: number) => {
     setIndex(i)
-    setOpenIndex(i)
     setDirection(0)
   }, [])
   const close = useCallback(() => setIndex(null), [])
@@ -59,9 +57,6 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
   }, [index, close, go])
 
   const active = index !== null ? photos[index] : null
-  // Shared-element morph only for the photo that was clicked to open (and to
-  // close back into it). Navigation between photos uses a momentum slide.
-  const morph = !reduce && index !== null && index === openIndex
 
   function onDragEnd(_: unknown, info: PanInfo) {
     const { offset, velocity } = info
@@ -90,14 +85,12 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
           >
             <motion.button
               type="button"
-              layoutId={reduce ? undefined : `ph-${p.id}`}
               onClick={() => open(i)}
               aria-label="Open photo"
               whileHover={reduce ? undefined : { y: -6 }}
               whileTap={reduce ? undefined : { scale: 0.98 }}
               transition={{ type: "spring", stiffness: 300, damping: 24 }}
               className="block w-full cursor-zoom-in overflow-hidden rounded-xl [box-shadow:var(--glow-photo)]"
-              style={{ opacity: index === i ? 0 : 1 }}
             >
               <BlurUpImage
                 src={p.thumbUrl}
@@ -157,7 +150,6 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
               <AnimatePresence custom={direction} mode="popLayout">
                 <motion.img
                   key={active.id}
-                  layoutId={morph ? `ph-${active.id}` : undefined}
                   src={active.fullUrl}
                   alt={active.caption ?? ""}
                   custom={direction}
@@ -166,17 +158,17 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
                   dragElastic={0.2}
                   onDragEnd={onDragEnd}
                   initial={
-                    morph
-                      ? false
-                      : reduce
-                        ? { opacity: 0 }
-                        : {
-                            opacity: 0,
-                            x: direction > 0 ? 80 : -80,
-                            filter: "blur(6px)",
-                          }
+                    reduce
+                      ? { opacity: 0 }
+                      : {
+                          opacity: 0,
+                          // open (direction 0) = zoom from the click; nav = slide
+                          x: direction === 0 ? 0 : direction > 0 ? 80 : -80,
+                          scale: direction === 0 ? 0.92 : 1,
+                          filter: "blur(6px)",
+                        }
                   }
-                  animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                  animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
                   exit={
                     reduce
                       ? { opacity: 0 }
@@ -188,7 +180,6 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
                   }
                   transition={{ type: "spring", stiffness: 240, damping: 32 }}
                   className="max-h-full max-w-full cursor-grab touch-none rounded-lg object-contain shadow-2xl active:cursor-grabbing"
-                  style={{ viewTransitionName: `photo-${active.id}` }}
                   draggable={false}
                 />
               </AnimatePresence>
