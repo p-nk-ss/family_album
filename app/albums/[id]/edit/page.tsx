@@ -37,7 +37,12 @@ export default async function EditAlbumPage({
         Drag to reorder. Click a photo to make it the cover.
       </p>
       {initial.length > 0 ? (
-        <ReorderGrid albumId={id} initial={initial} />
+        <ReorderGrid
+          key={initial.map((i) => i.photoId).join("-")}
+          albumId={id}
+          initial={initial}
+          coverPhotoId={album.coverPhotoId}
+        />
       ) : (
         <p className="text-ink/50 text-sm">
           No photos in this album yet — add some below.
