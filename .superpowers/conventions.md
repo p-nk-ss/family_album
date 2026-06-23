@@ -60,7 +60,13 @@ Modules under `lib/` are imported by Vitest (node env) integration tests.
 `server-only` throws outside the RSC bundler and breaks tests. Omit it from
 `lib/r2.ts`, `lib/dto.ts`, `lib/session.ts`, etc. (The plan shows it — drop it.)
 
-## 6. Tailwind is whatever create-next-app installs (likely v4, CSS-first)
+## 5b. Stack is Next 16 + Tailwind v4 (confirmed installed)
+Next.js **16.2.9** (Turbopack default), React 19.2.4, Tailwind **v4**, TS 5.
+- Dynamic route `params` is a `Promise` — always `await params` in route handlers/pages.
+- `next lint` is removed in Next 16; do not rely on the `lint` script. ESLint runs via `eslint` directly if needed.
+- Route handlers use the Web `Request`/`Response` signature.
+
+## 6. Tailwind v4 (confirmed) — CSS-first
 If Tailwind v4: there is no `tailwind.config.ts`. Define palette tokens in
 `app/globals.css` inside an `@theme { … }` block, e.g.
 `--color-paper: #F7F1E6; --color-ink: #2B2723; --color-terracotta: #C06A4B;`
