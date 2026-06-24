@@ -67,7 +67,8 @@ export default function SignInPage() {
           />
         </motion.button>
 
-        {process.env.NEXT_PUBLIC_DEV_AUTH === "true" && (
+        {process.env.NODE_ENV !== "production" &&
+          process.env.NEXT_PUBLIC_DEV_AUTH === "true" && (
           <motion.button
             variants={rise}
             onClick={() => signIn("dev", { callbackUrl: "/library" })}
