@@ -20,3 +20,12 @@ test-results/
 
 # Local env files
 .env*.local
+
+# Generated knowledge graph (graphify output — regenerated locally)
+graphify-out/
+
+# Local-only agent/skill scratch
+.agents/
+
+# Local Claude settings (machine-specific)
+.claude/settings.local.json
