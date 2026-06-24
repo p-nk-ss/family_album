@@ -7,7 +7,9 @@ import {
   useReducedMotion,
   type PanInfo,
 } from "framer-motion"
+import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { BlurUpImage } from "@/components/motion/BlurUpImage"
+import { Reveal } from "@/components/motion/Reveal"
 import { CommentThread } from "@/components/comments/CommentThread"
 
 export type StoryPhoto = {
@@ -70,42 +72,42 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
           aspect ratio, instead of one tall vertical column */}
       <div className="gap-4 [column-fill:balance] columns-2 lg:columns-3">
         {photos.map((p, i) => (
-          <motion.figure
+          // NOTE: thumbnails deliberately carry NO persistent framer transform
+          // layer (no Parallax / will-change, no layoutId). BlurUpImage corrects
+          // a tile's aspect ratio late (on image load); a transform/compositing
+          // layer over a tile that resizes mid-hover is what made photos vanish
+          // on slow first load. `Reveal` only animates the entrance once, then
+          // settles — safe. Keep it that way.
+          <Reveal
             key={p.id}
-            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{
-              type: "spring",
-              stiffness: 160,
-              damping: 24,
-              delay: Math.min(i, 8) * 0.04,
-            }}
+            delay={Math.min(i, 8) * 0.04}
             className="mb-4 break-inside-avoid"
           >
-            <motion.button
-              type="button"
-              onClick={() => open(i)}
-              aria-label="Open photo"
-              whileHover={reduce ? undefined : { y: -6 }}
-              whileTap={reduce ? undefined : { scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 300, damping: 24 }}
-              className="block w-full cursor-zoom-in overflow-hidden rounded-xl [box-shadow:var(--glow-photo)]"
-            >
-              <BlurUpImage
-                src={p.thumbUrl}
-                blurhash={p.blurhash}
-                width={p.width}
-                height={p.height}
-                alt={p.caption ?? ""}
-              />
-            </motion.button>
-            {p.caption && (
-              <figcaption className="mt-2 px-1 font-serif text-sm italic leading-snug text-ink/50">
-                {p.caption}
-              </figcaption>
-            )}
-          </motion.figure>
+            <figure>
+              <motion.button
+                type="button"
+                onClick={() => open(i)}
+                aria-label="Open photo"
+                whileHover={reduce ? undefined : { y: -6 }}
+                whileTap={reduce ? undefined : { scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                className="block w-full cursor-zoom-in overflow-hidden rounded-xl [box-shadow:var(--glow-photo)]"
+              >
+                <BlurUpImage
+                  src={p.thumbUrl}
+                  blurhash={p.blurhash}
+                  width={p.width}
+                  height={p.height}
+                  alt={p.caption ?? ""}
+                />
+              </motion.button>
+              {p.caption && (
+                <figcaption className="mt-2 px-1 font-serif text-sm italic leading-snug text-ink/60">
+                  {p.caption}
+                </figcaption>
+              )}
+            </figure>
+          </Reveal>
         ))}
       </div>
 
@@ -133,9 +135,9 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
                 type="button"
                 onClick={close}
                 aria-label="Close"
-                className="rounded-full px-3 py-1 text-white/70 transition-colors hover:text-white active:scale-95"
+                className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-white/70 transition-colors hover:text-white active:scale-95"
               >
-                Close ✕
+                Close <X size={16} aria-hidden />
               </button>
             </div>
 
@@ -179,7 +181,7 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
                         }
                   }
                   transition={{ type: "spring", stiffness: 240, damping: 32 }}
-                  className="max-h-full max-w-full cursor-grab touch-none rounded-lg object-contain shadow-2xl active:cursor-grabbing"
+                  className="max-h-full max-w-full cursor-grab touch-none rounded-xl object-contain shadow-2xl active:cursor-grabbing"
                   draggable={false}
                 />
               </AnimatePresence>
@@ -213,11 +215,15 @@ function NavButton({
       type="button"
       onClick={onClick}
       aria-label={side === "left" ? "Previous photo" : "Next photo"}
-      className={`absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-lg text-white/80 backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white/20 active:scale-90 ${
+      className={`absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white/80 backdrop-blur-md transition-[background-color,transform] duration-200 hover:bg-white/20 active:scale-90 ${
         side === "left" ? "left-3 sm:left-6" : "right-3 sm:right-6"
       }`}
     >
-      {side === "left" ? "‹" : "›"}
+      {side === "left" ? (
+        <ChevronLeft size={22} aria-hidden />
+      ) : (
+        <ChevronRight size={22} aria-hidden />
+      )}
     </button>
   )
 }

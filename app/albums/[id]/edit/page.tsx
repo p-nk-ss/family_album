@@ -1,3 +1,5 @@
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
@@ -32,37 +34,52 @@ export default async function EditAlbumPage({
   )
 
   return (
-    <main className="max-w-2xl mx-auto px-6 py-12">
-      <h1 className="font-serif text-4xl mb-2">{album.title}</h1>
-      <p className="text-ink/60 mb-8">
-        Drag to reorder. Click a photo to make it the cover.
-      </p>
-      {initial.length > 0 ? (
-        <ReorderGrid
-          key={initial.map((i) => i.photoId).join("-")}
-          albumId={id}
-          initial={initial}
-          coverPhotoId={album.coverPhotoId}
-        />
-      ) : (
-        <p className="text-ink/50 text-sm">
-          No photos in this album yet — add some below.
-        </p>
-      )}
+    <main className="mx-auto max-w-2xl px-6 py-12">
+      <Link
+        href={`/albums/${id}`}
+        className="mb-8 inline-flex min-h-11 items-center gap-1.5 text-sm text-ink/60 transition-colors hover:text-terracotta"
+      >
+        <ArrowLeft size={16} aria-hidden /> Back to album
+      </Link>
 
-      <h2 className="font-serif text-2xl mt-10 mb-4">Add photos</h2>
-      <p className="text-ink/60 text-sm mb-4">
-        Upload photos straight into this album. Each photo lives in one album.
+      <p className="eyebrow mb-3">editing album</p>
+      <h1 className="font-serif text-4xl font-light tracking-tight">
+        {album.title}
+      </h1>
+      <p className="mt-3 text-ink/60">
+        Drag the handle to reorder. Set any photo as the cover, or remove it.
       </p>
-      <AlbumUploader albumId={id} />
+
+      <div className="mt-8">
+        {initial.length > 0 ? (
+          <ReorderGrid
+            key={initial.map((i) => i.photoId).join("-")}
+            albumId={id}
+            initial={initial}
+            coverPhotoId={album.coverPhotoId}
+          />
+        ) : (
+          <p className="text-sm text-ink/60">
+            No photos in this album yet — add some below.
+          </p>
+        )}
+      </div>
+
+      <div className="mt-14 border-t border-ink/10 pt-10">
+        <h2 className="font-serif text-2xl font-light">Add photos</h2>
+        <p className="mb-5 mt-2 text-sm text-ink/60">
+          Upload photos straight into this album. Each photo lives in one album.
+        </p>
+        <AlbumUploader albumId={id} />
+      </div>
 
       <div className="mt-12 flex items-center justify-between border-t border-ink/10 pt-6">
-        <a
+        <Link
           href={`/albums/${id}`}
-          className="inline-block rounded-full bg-terracotta px-6 py-2 text-paper"
+          className="rounded-full bg-terracotta px-7 py-3 font-medium text-paper shadow-[0_10px_40px_-12px_rgba(230,168,107,0.7)] transition-[transform,background-color] duration-200 ease-out hover:bg-[#f0b478] active:scale-[0.97]"
         >
           View story
-        </a>
+        </Link>
         <DeleteAlbumButton albumId={id} />
       </div>
     </main>

@@ -1,74 +1,86 @@
-"use client"
+import { auth } from "@/lib/auth"
+import { prisma } from "@/lib/db"
+import { presignGet } from "@/lib/r2"
+import { LandingHero } from "@/components/landing/LandingHero"
+import {
+  LandingShowcase,
+  type ShowcaseStats,
+  type ShowcaseTeaser,
+} from "@/components/landing/LandingShowcase"
 
-import Link from "next/link"
-import { motion, useReducedMotion, type Variants } from "framer-motion"
+export const dynamic = "force-dynamic"
 
-export default function Home() {
-  const reduce = useReducedMotion()
+export default async function Home() {
+  const session = await auth()
+  const signedIn = Boolean(session?.user)
 
-  const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-  }
-  const rise: Variants = {
-    hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 18 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", stiffness: 120, damping: 20 },
-    },
+  // The public front door must never leak private imagery: only signed-in
+  // visitors get the photo montage, the stats, and the latest-album teaser.
+  let covers: string[] = []
+  let stats: ShowcaseStats | null = null
+  let teaser: ShowcaseTeaser | null = null
+
+  if (signedIn) {
+    const albums = await prisma.album.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        coverPhoto: true,
+        createdBy: { select: { name: true } },
+        albumPhotos: { include: { photo: true }, orderBy: { position: "asc" } },
+      },
+    })
+
+    // recent covers for the slow cross-fading montage (full-res, capped)
+    const coverPhotos = albums
+      .map((a) => a.coverPhoto ?? a.albumPhotos[0]?.photo ?? null)
+      .filter((p): p is NonNullable<typeof p> => p !== null)
+    covers = await Promise.all(
+      coverPhotos.slice(0, 6).map((p) => presignGet({ key: p.r2Key })),
+    )
+
+    const totalPhotos = albums.reduce((n, a) => n + a.albumPhotos.length, 0)
+    const allDates = albums.flatMap((a) =>
+      a.albumPhotos
+        .map((ap) => ap.photo.takenAt)
+        .filter((d): d is Date => d !== null),
+    )
+    const sinceYear =
+      allDates.length > 0
+        ? new Date(Math.min(...allDates.map((d) => +d))).getFullYear()
+        : albums.length > 0
+          ? albums[albums.length - 1].createdAt.getFullYear()
+          : new Date().getFullYear()
+    stats = { albums: albums.length, photos: totalPhotos, sinceYear }
+
+    const latest = albums[0]
+    if (latest) {
+      const cover = latest.coverPhoto ?? latest.albumPhotos[0]?.photo ?? null
+      const dates = latest.albumPhotos
+        .map((ap) => ap.photo.takenAt)
+        .filter((d): d is Date => d !== null)
+      teaser = {
+        id: latest.id,
+        title: latest.title,
+        author: latest.createdBy?.name ?? null,
+        photoCount: latest.albumPhotos.length,
+        coverFullUrl: cover ? await presignGet({ key: cover.r2Key }) : null,
+        dateRange:
+          dates.length > 0
+            ? {
+                from: new Date(
+                  Math.min(...dates.map((d) => +d)),
+                ).toISOString(),
+                to: new Date(Math.max(...dates.map((d) => +d))).toISOString(),
+              }
+            : null,
+      }
+    }
   }
 
   return (
-    <main className="relative flex min-h-[calc(100vh-65px)] flex-col items-center justify-center overflow-hidden px-6 text-center">
-      {/* warm "evening" glow rising behind the title */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-[60%] rounded-full opacity-60 blur-[120px]"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(230,168,107,0.22), transparent 70%)",
-        }}
-      />
-
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="relative"
-      >
-        <motion.p
-          variants={rise}
-          className="mb-7 text-sm uppercase tracking-[0.4em] text-terracotta"
-        >
-          our family, kept close
-        </motion.p>
-        <motion.h1
-          variants={rise}
-          className="font-serif font-light leading-[0.95] tracking-tight"
-          style={{ fontSize: "var(--text-display)" }}
-        >
-          Family Albums
-        </motion.h1>
-        <motion.p
-          variants={rise}
-          className="mx-auto mt-7 max-w-md text-lg leading-relaxed text-ink/65"
-        >
-          A quiet, private home for the photos that matter — kept as albums and
-          stories, not an endless feed.
-        </motion.p>
-        <motion.div variants={rise}>
-          <Link
-            href="/library"
-            className="group mt-11 inline-flex items-center gap-2 rounded-full bg-terracotta px-8 py-3.5 font-medium text-paper shadow-[0_10px_40px_-12px_rgba(230,168,107,0.7)] transition-[transform,background-color] duration-200 ease-out hover:bg-[#f0b478] active:scale-[0.97]"
-          >
-            Enter the library
-            <span className="transition-transform duration-300 ease-out group-hover:translate-x-1">
-              →
-            </span>
-          </Link>
-        </motion.div>
-      </motion.div>
+    <main>
+      <LandingHero covers={covers} signedIn={signedIn} />
+      {signedIn && stats && <LandingShowcase stats={stats} teaser={teaser} />}
     </main>
   )
 }

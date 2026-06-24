@@ -36,11 +36,15 @@ export function DeleteAlbumButton({ albumId }: { albumId: string }) {
       <button
         onClick={handleDelete}
         disabled={busy}
-        className="text-sm text-red-700 hover:underline disabled:opacity-50"
+        className="flex min-h-11 items-center text-sm text-danger transition-opacity hover:underline disabled:opacity-50"
       >
         {busy ? "Deleting…" : "Delete album"}
       </button>
-      {error && <p className="text-sm text-red-700">{error}</p>}
+      {error && (
+        <p className="text-sm text-danger" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   )
 }

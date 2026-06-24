@@ -55,15 +55,16 @@ export function CommentThread({ photoId }: { photoId: string }) {
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-ink/40">Be the first to leave a memory.</p>
+        <p className="text-sm text-ink/60">Be the first to leave a memory.</p>
       )}
       <form onSubmit={submit} className="flex items-center gap-3">
         <input
           ref={inputRef}
           value={body}
           onChange={(e) => setBody(e.target.value)}
+          aria-label="Add a memory"
           placeholder="Add a memory…"
-          className="flex-1 border-b border-ink/15 bg-transparent py-2 text-sm outline-none transition-colors placeholder:text-ink/30 focus:border-terracotta"
+          className="flex-1 border-b border-ink/15 bg-transparent py-2 text-sm outline-none transition-colors placeholder:text-ink/55 focus:border-terracotta"
         />
         <button
           type="submit"

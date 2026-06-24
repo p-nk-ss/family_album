@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { KenBurns } from "@/components/motion/KenBurns"
+import { Parallax } from "@/components/motion/Parallax"
 
 export function FeaturedAlbum({
   id,
@@ -30,9 +31,12 @@ export function FeaturedAlbum({
       href={`/albums/${id}`}
       className="group relative block overflow-hidden rounded-2xl"
     >
-      <div className="relative aspect-[16/10] w-full bg-paper-200 sm:aspect-[16/7]">
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-paper-200 sm:aspect-[16/7]">
         {coverFullUrl ? (
-          <KenBurns src={coverFullUrl} alt="" />
+          // inflated so the parallax travel never reveals an edge
+          <Parallax distance={50} className="absolute -inset-y-12 inset-x-0">
+            <KenBurns src={coverFullUrl} alt="" />
+          </Parallax>
         ) : (
           <div className="h-full w-full bg-paper-200" />
         )}
@@ -40,9 +44,7 @@ export function FeaturedAlbum({
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500 group-hover:from-black/85" />
       </div>
       <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10">
-        <p className="mb-3 text-xs uppercase tracking-[0.3em] text-terracotta">
-          Featured album
-        </p>
+        <p className="eyebrow mb-3">Featured album</p>
         <h2 className="max-w-2xl font-serif text-4xl font-light leading-[1.05] text-white sm:text-6xl">
           {title}
         </h2>

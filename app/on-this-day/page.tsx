@@ -28,7 +28,7 @@ export default async function OnThisDayPage() {
     <main className="px-6 py-12">
       <h1 className="font-serif text-5xl mb-10 text-center">On this day</h1>
       {years.length === 0 && (
-        <p className="text-center text-ink/50">
+        <p className="text-center text-ink/60">
           Nothing from this day — yet.
         </p>
       )}

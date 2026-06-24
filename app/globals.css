@@ -13,12 +13,19 @@
   --color-ink: #f2e8d8; /* warm off-white text */
   --color-terracotta: #e6a86b; /* amber accent */
   --color-terracotta-deep: #c9824a; /* accent pressed / deep */
+  /* semantic danger — a warm, light red that stays legible on the dark ground
+     (raw Tailwind red-700 was ~2.9:1 and failed AA). */
+  --color-danger: #f08a7a; /* ~5.2:1 on paper */
 
   --font-serif: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
 
-  /* type scale (display leans into Fraunces optical contrast) */
+  /* Editorial type scale — Fraunces leans into its optical display contrast.
+     Hero is the signature size (landing / chapter covers); display + h2 carry
+     section titles below it. Inter stays for body copy. */
+  --text-hero: clamp(3.25rem, 11vw, 8rem);
   --text-display: clamp(2.75rem, 6vw, 5.5rem);
+  --text-h2: clamp(2rem, 4vw, 3.25rem);
 }
 
 :root {
@@ -26,6 +33,8 @@
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  /* slow, weighty curve for cinematic hero / chapter-cover moves */
+  --ease-hero: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* layered depth tuned for a dark ground: a soft drop + a faint warm rim */
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -64,9 +73,54 @@ body {
   border-radius: 4px;
 }
 
+/* Shape language (keep consistent across the app):
+   - pill CTAs / chips  → rounded-full
+   - cards / large surfaces → rounded-2xl
+   - tiles / media / inputs → rounded-xl
+   Avoid rounded-lg/md ad-hoc; pick from the three above. */
+
 /* photos sit on the dark ground with a warm glow */
 .photo-glow {
   box-shadow: var(--glow-photo);
+}
+
+/* Editorial display titles: Fraunces, light, tight optical setting. Pair with
+   font-serif. Negative tracking + sub-unity leading is what makes the big sizes
+   read as set type rather than a scaled-up paragraph. */
+.text-hero {
+  font-size: var(--text-hero);
+  font-weight: 300;
+  line-height: 0.92;
+  letter-spacing: -0.022em;
+}
+
+/* "Structure is information": a small uppercase label that frames the title
+   below it. Amber, wide tracking, Inter. */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-terracotta);
+}
+
+/* Warm cinematic vignette for hero / chapter covers — darkens the edges so a
+   bright photo never fights the type, and seats the image into the dark ground.
+   Place as an absolutely-positioned aria-hidden overlay above the image. */
+.hero-vignette {
+  background:
+    radial-gradient(
+      120% 100% at 50% 0%,
+      transparent 40%,
+      rgba(11, 9, 7, 0.55) 100%
+    ),
+    linear-gradient(
+      to top,
+      var(--color-paper) 2%,
+      rgba(23, 19, 15, 0.35) 35%,
+      transparent 70%
+    );
 }
 
 @media (prefers-reduced-motion: reduce) {

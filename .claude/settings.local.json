@@ -14,7 +14,8 @@
       "Bash(node *)",
       "Bash(git -C /Users/pankaz-mac/Projects/family_albums status)",
       "Bash(git -C /Users/pankaz-mac/Projects/family_albums branch)",
-      "Bash(git -C /Users/pankaz-mac/Projects/family_albums log --oneline)"
+      "Bash(git -C /Users/pankaz-mac/Projects/family_albums log --oneline)",
+      "Bash(npm run *)"
     ]
   }
 }

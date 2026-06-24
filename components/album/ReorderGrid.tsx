@@ -3,6 +3,7 @@
 import { Reorder } from "framer-motion"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Check, GripVertical, Star, Trash2 } from "lucide-react"
 
 type Item = { photoId: string; thumbUrl: string }
 
@@ -56,42 +57,59 @@ export function ReorderGrid({
       axis="y"
       values={items}
       onReorder={persist}
-      className="space-y-3"
+      className="space-y-2"
     >
-      {items.map((item) => {
+      {items.map((item, idx) => {
         const isCover = item.photoId === cover
         return (
           <Reorder.Item
             key={item.photoId}
             value={item}
-            whileDrag={{ scale: 1.03, boxShadow: "0 12px 30px rgba(0,0,0,0.15)" }}
-            className="flex items-center gap-4 rounded-lg bg-paper-200 p-2 cursor-grab active:cursor-grabbing"
+            whileDrag={{
+              scale: 1.02,
+              boxShadow: "0 16px 40px rgba(0,0,0,0.5)",
+            }}
+            className="group flex cursor-grab items-center gap-3 rounded-xl border border-transparent bg-paper-200/60 p-2.5 transition-colors hover:bg-paper-200 active:cursor-grabbing sm:gap-4"
           >
+            <GripVertical
+              size={18}
+              aria-hidden
+              className="shrink-0 text-ink/25 transition-colors group-hover:text-ink/45"
+            />
+            <span className="w-6 shrink-0 text-center text-sm tabular-nums text-ink/35">
+              {String(idx + 1).padStart(2, "0")}
+            </span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.thumbUrl}
               alt=""
-              className={`h-16 w-16 rounded object-cover ${isCover ? "ring-2 ring-terracotta ring-offset-2 ring-offset-paper-200" : ""}`}
+              draggable={false}
+              className={`h-16 w-24 shrink-0 rounded-lg object-cover ${
+                isCover ? "ring-2 ring-terracotta ring-offset-2 ring-offset-paper" : ""
+              }`}
             />
-            {isCover ? (
-              <span className="text-sm font-medium text-terracotta">
-                ✓ Cover
-              </span>
-            ) : (
+
+            <div className="ml-auto flex items-center gap-1">
+              {isCover ? (
+                <span className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-terracotta">
+                  <Check size={15} aria-hidden /> Cover
+                </span>
+              ) : (
+                <button
+                  onClick={() => makeCover(item.photoId)}
+                  className="flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm text-ink/55 transition-colors hover:bg-ink/5 hover:text-terracotta"
+                >
+                  <Star size={14} aria-hidden /> Set as cover
+                </button>
+              )}
               <button
-                onClick={() => makeCover(item.photoId)}
-                className="text-sm text-ink/60 hover:text-terracotta transition-colors"
+                onClick={() => removePhoto(item.photoId)}
+                aria-label="Delete photo"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-ink/40 transition-colors hover:bg-danger/10 hover:text-danger"
               >
-                Set as cover
+                <Trash2 size={16} aria-hidden />
               </button>
-            )}
-            <button
-              onClick={() => removePhoto(item.photoId)}
-              aria-label="Delete photo"
-              className="ml-auto text-sm text-ink/40 hover:text-red-700 transition-colors"
-            >
-              Delete
-            </button>
+            </div>
           </Reorder.Item>
         )
       })}

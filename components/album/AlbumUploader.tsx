@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import { Check } from "lucide-react"
 import { uploadPhotoFile } from "@/lib/upload-client"
 
 export function AlbumUploader({ albumId }: { albumId: string }) {
@@ -46,7 +47,7 @@ export function AlbumUploader({ albumId }: { albumId: string }) {
 
   return (
     <div className="space-y-3">
-      <label className="inline-flex cursor-pointer items-center rounded-full bg-terracotta px-6 py-2 text-paper">
+      <label className="inline-flex cursor-pointer items-center rounded-full bg-terracotta px-7 py-3 font-medium text-paper shadow-[0_10px_40px_-12px_rgba(230,168,107,0.7)] transition-[transform,background-color] duration-200 ease-out hover:bg-[#f0b478] active:scale-[0.97]">
         {busy ? "Uploading…" : "Choose photos"}
         <input
           ref={inputRef}
@@ -65,11 +66,19 @@ export function AlbumUploader({ albumId }: { albumId: string }) {
         </p>
       )}
       {progress && !busy && !error && progress.done > 0 && (
-        <p data-testid="upload-done" className="text-sm text-terracotta">
-          Added {progress.done} photo{progress.done > 1 ? "s" : ""} ✓
+        <p
+          data-testid="upload-done"
+          className="flex items-center gap-1.5 text-sm text-terracotta"
+        >
+          Added {progress.done} photo{progress.done > 1 ? "s" : ""}
+          <Check size={15} aria-hidden />
         </p>
       )}
-      {error && <p className="text-sm text-red-700">{error}</p>}
+      {error && (
+        <p className="text-sm text-danger" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   )
 }

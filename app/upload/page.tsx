@@ -37,7 +37,7 @@ export default async function UploadPage() {
                   className="flex items-baseline justify-between py-3 hover:text-terracotta transition-colors"
                 >
                   <span className="font-serif text-xl">{a.title}</span>
-                  <span className="text-sm text-ink/40">
+                  <span className="text-sm text-ink/60">
                     {a._count.albumPhotos} photos
                   </span>
                 </Link>

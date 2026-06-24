@@ -41,11 +41,11 @@ export function AlbumCard({
       <h3 className="mt-3 font-serif text-2xl leading-snug transition-colors group-hover:text-terracotta">
         {title}
       </h3>
-      <p className="mt-1 text-sm text-ink/45">
+      <p className="mt-1 text-sm text-ink/60">
         {photoCount} {photoCount === 1 ? "photo" : "photos"}
         {range && ` · ${range}`}
       </p>
-      {author && <p className="text-xs text-ink/35">by {author}</p>}
+      {author && <p className="text-xs text-ink/55">by {author}</p>}
     </Link>
   )
 }
