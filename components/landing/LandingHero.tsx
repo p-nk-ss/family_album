@@ -10,6 +10,8 @@ import {
 } from "framer-motion"
 import { ArrowRight, ChevronDown } from "lucide-react"
 import { Parallax } from "@/components/motion/Parallax"
+import SplitText from "@/components/reactbits/SplitText"
+import ShinyText from "@/components/reactbits/ShinyText"
 
 /**
  * The signature front door: an oversized Fraunces title over a slow cross-fading
@@ -96,12 +98,32 @@ export function LandingHero({
 
       {/* foreground content */}
       <motion.div variants={container} initial="hidden" animate="show" className="relative">
-        <motion.p variants={rise} className="eyebrow mb-7">
-          our family, kept close
+        <motion.p variants={rise} className="mb-7">
+          {/* warm shine sweep on the eyebrow; static terracotta under reduced motion */}
+          <ShinyText
+            text="our family, kept close"
+            className="eyebrow"
+            color="#e6a86b"
+            shineColor="#fff1dd"
+            speed={5}
+            spread={70}
+            disabled={!!reduce}
+          />
         </motion.p>
-        <motion.h1 variants={rise} className="text-hero font-serif">
-          Family Albums
-        </motion.h1>
+        {/* the centerpiece: per-character masked reveal. `from === to` when
+            reduced-motion is on → identical SSR markup, no flash, no animation. */}
+        <SplitText
+          text="Family Albums"
+          tag="h1"
+          className="text-hero font-serif"
+          splitType="chars"
+          delay={40}
+          duration={0.9}
+          ease="power3.out"
+          from={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+          to={{ opacity: 1, y: 0 }}
+          textAlign="center"
+        />
         <motion.p
           variants={rise}
           className="mx-auto mt-8 max-w-md text-lg leading-relaxed text-ink/65"
