@@ -19,6 +19,8 @@
 
   --font-serif: var(--font-fraunces), Georgia, serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
+  /* handwriting for the inscription on the back of a print (.photo-note) */
+  --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
 
   /* Editorial type scale — Fraunces leans into its optical display contrast.
      Hero is the signature size (landing / chapter covers); display + h2 carry
@@ -123,6 +125,64 @@ body {
     );
 }
 
+/* The back of a printed photo: warm aged paper with a faint grain + inner
+   vignette, sepia ink. Used as the flip-side of a captioned photo (PhotoFlip).
+   The handwriting itself is set with `font-hand` + a slight tilt in the JSX. */
+.photo-note {
+  background-color: #e8dcc3;
+  background-image:
+    radial-gradient(120% 140% at 12% 8%, rgba(120, 92, 54, 0.1), transparent 55%),
+    radial-gradient(110% 130% at 88% 92%, rgba(120, 92, 54, 0.13), transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  color: #5b4a36;
+  box-shadow:
+    inset 0 0 70px rgba(74, 58, 38, 0.22),
+    inset 0 0 9px rgba(74, 58, 38, 0.16);
+}
+
+/* Aged ink: translucent so the paper grain shows through each stroke (uneven
+   fade), with a faint bleed — handwriting that soaked into the paper, not a
+   flat print. Set on the note text inside .photo-note. */
+.photo-note-ink {
+  color: rgba(72, 54, 33, 0.82);
+  text-shadow:
+    0 0.5px 0.6px rgba(48, 35, 19, 0.22),
+    0 0 0.5px rgba(48, 35, 19, 0.16);
+}
+
+/* Peeling dog-ear: a folded bottom-right corner that reveals a sliver of the
+   same cream paper as the back — the affordance that a photo has a note to
+   read. Place inside a `.group` front face; lifts a touch more on hover. */
+.photo-dogear {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 3rem;
+  height: 3rem;
+  pointer-events: none;
+  border-bottom-right-radius: 0.75rem; /* match the tile's rounded-xl */
+  /* bright crease at the fold (top-left, along the cut edge) → cream → shaded
+     outer corner, so the peel reads as lifted paper even over a busy photo */
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #f7eed7 15%,
+    #ecdfc1 55%,
+    #b3a081 100%
+  );
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  box-shadow: -7px -7px 16px rgba(0, 0, 0, 0.5);
+  transition:
+    width 0.3s var(--ease-out),
+    height 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out);
+}
+.group:hover .photo-dogear {
+  width: 3.7rem;
+  height: 3.7rem;
+  box-shadow: -10px -10px 22px rgba(0, 0, 0, 0.62);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -133,5 +193,11 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.12s !important;
+  }
+  /* static fold — no peel/lift on hover */
+  .group:hover .photo-dogear {
+    width: 3rem;
+    height: 3rem;
+    box-shadow: -7px -7px 16px rgba(0, 0, 0, 0.5);
   }
 }

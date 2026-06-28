@@ -2,7 +2,6 @@ import { notFound } from "next/navigation"
 import { prisma } from "@/lib/db"
 import { presignGet } from "@/lib/r2"
 import { Lightbox } from "@/components/motion/Lightbox"
-import { CommentThread } from "@/components/comments/CommentThread"
 
 export const dynamic = "force-dynamic"
 
@@ -23,7 +22,6 @@ export default async function PhotoPage({
           {photo.caption}
         </p>
       )}
-      <CommentThread photoId={photo.id} />
     </main>
   )
 }

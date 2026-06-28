@@ -30,6 +30,7 @@ export default async function EditAlbumPage({
     album.albumPhotos.map(async (ap) => ({
       photoId: ap.photo.id,
       thumbUrl: await presignGet({ key: ap.photo.thumbKey ?? ap.photo.r2Key }),
+      caption: ap.photo.caption,
     })),
   )
 
@@ -48,6 +49,7 @@ export default async function EditAlbumPage({
       </h1>
       <p className="mt-3 text-ink/60">
         Drag the handle to reorder. Set any photo as the cover, or remove it.
+        Add a note to write on the back of a photo — readers flip it to read.
       </p>
 
       <div className="mt-8">

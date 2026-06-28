@@ -39,3 +39,16 @@ export const photoMetadataSchema = z.object({
   blurhash: z.string().nullable(),
   caption: z.string().max(2000).nullable().optional(),
 })
+
+// The per-photo "note" authored in the album editor (PATCH /api/photos/[id]).
+// An empty/whitespace string clears the note → stored as null.
+export const photoCaptionSchema = z.object({
+  caption: z
+    .string()
+    .max(2000)
+    .nullable()
+    .transform((v) => {
+      const trimmed = v?.trim()
+      return trimmed ? trimmed : null
+    }),
+})

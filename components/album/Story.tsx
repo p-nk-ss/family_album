@@ -10,7 +10,7 @@ import {
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { BlurUpImage } from "@/components/motion/BlurUpImage"
 import { Reveal } from "@/components/motion/Reveal"
-import { CommentThread } from "@/components/comments/CommentThread"
+import { PhotoFlip } from "@/components/album/PhotoFlip"
 
 export type StoryPhoto = {
   id: string
@@ -101,11 +101,8 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
                   alt={p.caption ?? ""}
                 />
               </motion.button>
-              {p.caption && (
-                <figcaption className="mt-2 px-1 font-serif text-sm italic leading-snug text-ink/60">
-                  {p.caption}
-                </figcaption>
-              )}
+              {/* No printed caption under the thumbnail — the note is a secret
+                  on the back, revealed by flipping the photo in the viewer. */}
             </figure>
           </Reveal>
         ))}
@@ -149,11 +146,12 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
                   <NavButton side="right" onClick={() => go(1)} />
                 </>
               )}
+              {/* The drag/swipe + enter-exit live on this OUTER wrapper; the
+                  flip itself lives INSIDE PhotoFlip, so a tap turns the print
+                  over while a horizontal drag still navigates the gallery. */}
               <AnimatePresence custom={direction} mode="popLayout">
-                <motion.img
+                <motion.div
                   key={active.id}
-                  src={active.fullUrl}
-                  alt={active.caption ?? ""}
                   custom={direction}
                   drag={photos.length > 1 ? "x" : false}
                   dragConstraints={{ left: 0, right: 0 }}
@@ -181,20 +179,15 @@ export function Story({ photos }: { photos: StoryPhoto[] }) {
                         }
                   }
                   transition={{ type: "spring", stiffness: 240, damping: 32 }}
-                  className="max-h-full max-w-full cursor-grab touch-none rounded-xl object-contain shadow-2xl active:cursor-grabbing"
-                  draggable={false}
-                />
+                  className="flex max-h-full max-w-full cursor-grab touch-none items-center justify-center active:cursor-grabbing"
+                >
+                  <PhotoFlip
+                    src={active.fullUrl}
+                    alt={active.caption ?? ""}
+                    caption={active.caption}
+                  />
+                </motion.div>
               </AnimatePresence>
-            </div>
-
-            {/* caption + comments panel */}
-            <div className="relative mx-auto max-h-[38vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl border-t border-white/10 bg-paper/80 px-6 py-5 backdrop-blur-xl">
-              {active.caption && (
-                <p className="mb-4 font-serif text-lg italic text-ink/80">
-                  {active.caption}
-                </p>
-              )}
-              <CommentThread photoId={active.id} />
             </div>
           </motion.div>
         )}
